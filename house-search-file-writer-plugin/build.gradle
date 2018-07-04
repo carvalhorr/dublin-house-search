@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group 'living'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':house-search-plugable')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
