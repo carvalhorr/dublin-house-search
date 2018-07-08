@@ -44,7 +44,6 @@ public class PropertyListReader implements Runnable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Thread.yield();
             }
             offset += 20;
         } while (boxes != null && boxes.size() > 0);

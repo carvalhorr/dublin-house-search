@@ -26,18 +26,18 @@ public class FieldExtractorPropertyInfoHandler implements IPropertyInfoExtracted
     public void handle(PropertyInfo propertyInfo) {
 
         synchronized (this) {
-            int type = getType(propertyInfo.getUrl());
+            String type = propertyInfo.getFields().get("property_category");
             switch (type) {
-                case 1: {
-                    addFields(saleFields, propertyInfo.getAdditionalInfo());
+                case "sale": {
+                    addFields(saleFields, propertyInfo.getFields());
                     break;
                 }
-                case 2: {
-                    addFields(rentFields, propertyInfo.getAdditionalInfo());
+                case "rental": {
+                    addFields(rentFields, propertyInfo.getFields());
                     break;
                 }
-                case 3: {
-                    addFields(shareFields, propertyInfo.getAdditionalInfo());
+                case "sharing": {
+                    addFields(shareFields, propertyInfo.getFields());
                     break;
                 }
             }
@@ -45,41 +45,34 @@ public class FieldExtractorPropertyInfoHandler implements IPropertyInfoExtracted
 
     }
 
-    private int getType(String url) {
-        String parts[] = url.split("/");
-        String lastPart = parts[parts.length - 1];
-        return Integer.parseInt(lastPart.substring(0, 1));
-    }
-
-    private void addFields(Map<String, List<String>> fieldMap, String fieldsString) {
-        String fields[] = fieldsString
-                .replace("{", "")
-                .replace("}", "")
-                .split(",");
-        for(String field : fields) {
-            String fieldPair[] = field.split(":");
-            String fieldName = fieldPair[0].trim();
-            String fieldValue = "";
-            if (fieldPair.length == 2) {
-                fieldValue = fieldPair[1].trim();
+    private void addFields(Map<String, List<String>> fieldMap, Map<String, String> fields) {
+        for (String fieldName : fields.keySet()) {
+            String fieldValue = fields.get(fieldName);
+            List<String> values = fieldMap.get(fieldName);
+            if (values == null) {
+                values = new ArrayList<>();
+                fieldMap.put(fieldName, values);
             }
-            if (fieldMap.containsKey(fieldName)) {
-                List<String> fieldValues = fieldMap.get(fieldName);
-                if (!fieldValues.contains(fieldValue)) {
-                    fieldValues.add(fieldValue);
-                }
-            } else {
-                List<String> fieldValues = new ArrayList<>();
-                fieldValues.add(fieldValue);
-                fieldMap.put(fieldName, fieldValues);
+            if (!values.contains(fieldValue)) {
+                values.add(fieldValue);
             }
         }
+
     }
 
     @Override
     public void end() {
-        System.out.println("Rent: " + rentFields.toString());
-        System.out.println("Share: " + shareFields.toString());
-        System.out.println("Sale: " + saleFields.toString());
+        System.out.println("Rent: ");
+        printStatistics(rentFields);
+        System.out.println("Share: ");
+        printStatistics(shareFields);
+        System.out.println("Sale: ");
+        printStatistics(saleFields);
+    }
+
+    private void printStatistics(Map<String, List<String>> fields) {
+        for (String fieldName : fields.keySet()) {
+            System.out.println("  " + fieldName + " : " + fields.get(fieldName));
+        }
     }
 }

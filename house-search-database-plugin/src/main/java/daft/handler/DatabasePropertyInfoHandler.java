@@ -34,7 +34,7 @@ public class DatabasePropertyInfoHandler implements IPropertyInfoExtractedHandle
     public void handle(PropertyInfo propertyInfo) {
         if (statement != null) {
             try {
-                // persistence.processPropertyInfo(propertyInfo);
+                persistence.processPropertyInfo(propertyInfo);
                 counter ++;
                 if (counter%100 == 0) {
                     counter = 0;

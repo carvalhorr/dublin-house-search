@@ -42,16 +42,13 @@ public class PropertyInfoExtractor implements Runnable {
                 e.printStackTrace();
             }
 
-            String name = doc.select(".smi-object-header h1").text();
-            String price = doc.select("#smi-price-string").text();
             String shortUrl = doc.select(".description_extras > a").text();
             String additionalData = findData(doc);
+            String id = shortUrl.replace("http://www.daft.ie/", "");
 
-            PropertyInfo propertyInfo = new PropertyInfo();
-            propertyInfo.setName(name);
-            propertyInfo.setPrice(price);
-            propertyInfo.setUrl(shortUrl);
-            propertyInfo.setAdditionalInfo(additionalData);
+            PropertyInfo propertyInfo = new PropertyInfo(id,
+                    url,
+                    additionalData);
 
             try {
                 extractedPropertyInfos.put(propertyInfo);

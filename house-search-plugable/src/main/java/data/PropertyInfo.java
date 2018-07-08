@@ -1,65 +1,71 @@
 package data;
 
-import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PropertyInfo {
 
     private String id;
-
-    private String name;
     private String url;
-    private String price;
-    private String additionalInfo;
+    private Map<String, String> fields = new HashMap<>();
+
+    public PropertyInfo(String id,
+                        String url,
+                        String additionalInfo) {
+        this.id = id;
+        this.url = url;
+        processAdditionalInfo(additionalInfo);
+    }
 
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public Map<String, String> getFields() {
+        return fields;
     }
+    private void processAdditionalInfo(String additionalInfo) {
+        String fieldsString = additionalInfo
+                .replace("{", "")
+                .replace("}", "");
+        int x = 0;
+        boolean take = true;
+        for (int i = 0; i < fieldsString.length(); i++) {
+            if (fieldsString.charAt(i) == '"') {
+                take = !take;
+            } else if (fieldsString.charAt(i) == ',') {
+                if (take) {
+                    String field = fieldsString.substring(x, i);
+                    // System.out.println(field);
+                    String fieldPair[] = field.split(":");
+                    String fieldName = fieldPair[0].trim();
+                    String fieldValue = "";
+                    if (fieldPair.length == 2) {
+                        fieldValue = fieldPair[1].trim();
+                    }
+                    fields.put(fieldName
+                                    .replace(",", "")
+                                    .replace("\"", ""),
+                            fieldValue
+                                    .replace("\"", ""));
+                    x = i;
+                }
+            }
+        }
 
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
     }
 
     @Override
     public String toString() {
         return "PropertyInfo{" +
                 "id='" + id + "\'" +
-                "name='" + name + '\'' +
                 ", url='" + url + '\'' +
-                ", price=" + price +
-                ", addtionalInfo=" + additionalInfo +
+                ", addtionalInfo=" + fields.toString() +
                 '}';
     }
 
