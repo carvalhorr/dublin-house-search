@@ -44,7 +44,9 @@ public class PropertyInfoExtractor implements Runnable {
 
             String shortUrl = doc.select(".description_extras > a").text();
             String additionalData = findData(doc);
-            String id = shortUrl.replace("http://www.daft.ie/", "");
+            String id = shortUrl
+                    .replace("http://www.daft.ie/", "")
+                    .replace("https://www.daft.ie/", "");
 
             PropertyInfo propertyInfo = new PropertyInfo(id,
                     url,

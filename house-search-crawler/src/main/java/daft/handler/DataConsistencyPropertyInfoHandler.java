@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FieldExtractorPropertyInfoHandler implements IPropertyInfoExtractedHandler {
+public class DataConsistencyPropertyInfoHandler implements IPropertyInfoExtractedHandler {
 
     private static Map<String, List<String>> rentFields;
     private static Map<String, List<String>> shareFields;

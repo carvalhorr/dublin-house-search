@@ -1,5 +1,6 @@
 package daft.persistence;
 
+import daft.handler.IPropertyInfoChangeHandler;
 import data.PropertyInfo;
 
 import java.sql.ResultSet;
@@ -9,10 +10,13 @@ import java.util.Map;
 
 public class PropertyInfoPersistence {
 
-    private Statement statement;
+    private final Statement statement;
+    private final IPropertyInfoChangeHandler changeHandler;
 
-    public PropertyInfoPersistence(Statement statement) {
+    public PropertyInfoPersistence(IPropertyInfoChangeHandler changeHandler,
+                                   Statement statement) {
         this.statement = statement;
+        this.changeHandler = changeHandler;
     }
 
     public void createTable() {
@@ -30,8 +34,10 @@ public class PropertyInfoPersistence {
         try {
             if (isNew(propertyInfo)) {
                 add(propertyInfo);
+                changeHandler.propertyInfoAdded(propertyInfo);
             } else {
                 update(propertyInfo);
+                changeHandler.propertyInfoUpdated(propertyInfo);
             }
         } catch (SQLException e) {
             e.printStackTrace();

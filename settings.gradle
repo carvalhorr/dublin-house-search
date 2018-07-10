@@ -3,4 +3,4 @@ include ':house-search-crawler'
 include ':house-search-plugable'
 include ':house-search-file-writer-plugin'
 include ':house-search-database-plugin'
-
+include ':house-search-change-detector-plugin'

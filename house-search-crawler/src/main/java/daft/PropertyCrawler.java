@@ -31,6 +31,10 @@ public class PropertyCrawler {
         Thread saleReader = new Thread(new PropertyListReader(propertyIds,
                 "http://www.daft.ie/dublin-city/property-for-sale/?s%5Badvanced%5D=1&searchSource=sale&offset=",
                 "1"));
+        Thread[] propertyListReaderThreads = {saleReader, rentReader, shareReader};
+        for (Thread propertyListReaderThread : propertyListReaderThreads) {
+            propertyListReaderThread.start();
+        }
 
         Thread[] infoExtractors = {
                 new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
@@ -43,6 +47,9 @@ public class PropertyCrawler {
                 new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
                 new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
                 new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos))};
+        for (Thread thread : infoExtractors) {
+            thread.start();
+        }
 
         ExtractedPropertyInfoConsumer[] propertyInfoConsumers = {
                 new ExtractedPropertyInfoConsumer(propertyIds, extractedPropertyInfos, finishedAddingItems),
@@ -51,6 +58,7 @@ public class PropertyCrawler {
                 new ExtractedPropertyInfoConsumer(propertyIds, extractedPropertyInfos, finishedAddingItems),
                 new ExtractedPropertyInfoConsumer(propertyIds, extractedPropertyInfos, finishedAddingItems)
         };
+
         for(ExtractedPropertyInfoConsumer consumer : propertyInfoConsumers) {
             consumer.start();
         }
@@ -62,20 +70,13 @@ public class PropertyCrawler {
         consumerThreads.add(new Thread(propertyInfoConsumers[3]));
         consumerThreads.add(new Thread(propertyInfoConsumers[4]));
 
-        Thread[] threads = {saleReader, rentReader, shareReader};
-        for (Thread thread : threads) {
-            thread.start();
-        }
-        for (Thread thread : infoExtractors) {
-            thread.start();
-        }
         for (Thread thread : consumerThreads) {
-
             thread.start();
         }
 
 
-        for (Thread thread : threads) {
+        // Synchronization
+        for (Thread thread : propertyListReaderThreads) {
             thread.join();
         }
         finishedAddingItems.set(true);
