@@ -25,10 +25,10 @@ public class ExtractedPropertyInfoConsumer implements Runnable, IPropertyInfoExt
         this.ids = ids;
 
         handlers.add(new ConsolePrinterPropertyInfoHandler());
-        handlers.add(new PropertyInfoHandlerService());
         handlers.add(new FileWriterPropertyInfoHandler());
-        handlers.add(new FieldExtractorPropertyInfoHandler());
+        handlers.add(new DataConsistencyPropertyInfoHandler());
         handlers.add(new DatabasePropertyInfoHandler());
+        handlers.add(new PropertyInfoHandlerService());
 
     }
 

@@ -1,0 +1,29 @@
+{
+  "and": {
+    "=": {
+      "fieldName": "owner_occupied",
+      "fieldType": "YesNo",
+      "value": "no"
+    },
+    "in": {
+      "fieldName": "gender",
+      "fieldType": "String",
+      "value": "male, either"
+    },
+    "in": {
+      "fieldName": "area",
+      "fieldType": "String",
+      "value": "Smithfield, Portobelo"
+    },
+    "contains":{
+      "fieldName": "facility",
+      "fieldType": "String",
+      "value": "Washing Machine"
+    },
+    "contains":{
+      "fieldName": "facility",
+      "fieldType": "String",
+      "value": "Dishwasher"
+    }
+  }
+}

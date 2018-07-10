@@ -16,30 +16,46 @@ public class DatabasePropertyInfoHandler implements IPropertyInfoExtractedHandle
     private Statement statement;
     private PropertyInfoPersistence persistence;
 
+    private final IPropertyInfoChangeHandler changeHandler;
+
+    public DatabasePropertyInfoHandler() {
+        changeHandler = new PropertyChangeHandlerPlugin();
+    }
+
+    public DatabasePropertyInfoHandler(IPropertyInfoChangeHandler changeHandler) {
+        this.changeHandler = changeHandler;
+    }
+
     @Override
     public void start() {
+
         try {
 
             Connection connection = DriverManager.getConnection("jdbc:h2:/home/carvalhorr/property;mv_store=false", "sa", "");
             statement = connection.createStatement();
-            persistence = new PropertyInfoPersistence(statement);
+            persistence = new PropertyInfoPersistence(changeHandler, statement);
             persistence.createTable();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        changeHandler.start();
+
     }
 
     @Override
     public void handle(PropertyInfo propertyInfo) {
         if (statement != null) {
             try {
+
                 persistence.processPropertyInfo(propertyInfo);
                 counter ++;
-                if (counter%100 == 0) {
+                if (counter%200 == 0) {
                     counter = 0;
                     statement.getConnection().commit();
                 }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -48,12 +64,17 @@ public class DatabasePropertyInfoHandler implements IPropertyInfoExtractedHandle
 
     @Override
     public void end() {
+
+        changeHandler.end();
+
         if (statement != null) {
             try {
+
                 Connection connection = statement.getConnection();
                 connection.commit();
                 statement.close();
                 connection.close();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
