@@ -1,6 +1,9 @@
-package daft.filter;
+package daft.util;
+
+import daft.filter.ValueType;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class FieldValueConverter {
 
@@ -22,7 +25,13 @@ public class FieldValueConverter {
                 throw new IllegalArgumentException("Value '" + value + "' not in valid range for YesNo field.");
             }
             case LIST: {
-                return Arrays.asList(value.split(","));
+                return Arrays.asList(value.split(","))
+                        .stream()
+                        .map(part->part.trim())
+                        .collect(Collectors.toList());
+            }
+            case STRING: {
+                return value;
             }
         }
         throw new IllegalArgumentException("Unexpected value type: " + type.toString());

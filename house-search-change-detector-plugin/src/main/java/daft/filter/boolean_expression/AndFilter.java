@@ -8,12 +8,12 @@ public class AndFilter extends BaseBooleanExpressionFilter {
 
     @Override
     public boolean apply(Map<String, String> fields) {
-        boolean result = false;
+        boolean result = true;
 
         for (Filter filter: filters) {
-            result = result && filter.apply(fields);
-            if (result == true) {
-                return true;
+            result = filter.apply(fields) && result;
+            if (result == false) {
+                return false;
             }
         }
 

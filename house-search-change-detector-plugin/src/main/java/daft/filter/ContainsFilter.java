@@ -1,5 +1,7 @@
 package daft.filter;
 
+import daft.util.FieldValueConverter;
+
 import java.util.List;
 import java.util.Map;
 

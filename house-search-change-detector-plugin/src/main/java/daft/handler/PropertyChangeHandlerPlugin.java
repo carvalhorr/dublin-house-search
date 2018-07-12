@@ -35,7 +35,9 @@ public class PropertyChangeHandlerPlugin implements IPropertyInfoChangeHandler {
     @Override
     public void propertyInfoAdded(PropertyInfo propertyInfo) {
         synchronized (this) {
-            addedPropertyInfos.add(propertyInfo);
+            if (filterProvider.getFilters().apply(propertyInfo.getFields())) {
+                addedPropertyInfos.add(propertyInfo);
+            }
         }
     }
 

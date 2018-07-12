@@ -48,6 +48,8 @@ public class PropertyInfoExtractor implements Runnable {
                     .replace("http://www.daft.ie/", "")
                     .replace("https://www.daft.ie/", "");
 
+            // TODO deal with properties that are not available (ex.: http://www.daft.ie/21849103 )
+
             PropertyInfo propertyInfo = new PropertyInfo(id,
                     url,
                     additionalData);
