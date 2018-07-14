@@ -32,9 +32,9 @@ public class PropertyInfoPersistence {
 
     public void processPropertyInfo(PropertyInfo propertyInfo) {
         try {
+            changeHandler.propertyInfoAdded(propertyInfo);
             if (isNew(propertyInfo)) {
-                add(propertyInfo);
-                changeHandler.propertyInfoAdded(propertyInfo);
+                // add(propertyInfo);
             } else {
                 update(propertyInfo);
                 changeHandler.propertyInfoUpdated(propertyInfo);

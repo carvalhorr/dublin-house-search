@@ -2,17 +2,23 @@ package daft.handler;
 
 import daft.filter.*;
 import daft.filter.boolean_expression.AndFilter;
+import data.ActionType;
+import data.User;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FilterProvider implements IFilterProvider {
 
-    private Filter filter = initFilter();
+    private List<Filter> filter = initFilter();
 
     @Override
-    public Filter getFilters() {
+    public List<Filter> getFilters() {
         return filter;
     }
 
-    private Filter initFilter() {
+    private List<Filter> initFilter() {
         AndFilter filter = new AndFilter();
 
         EqualsFilter houseShare = new EqualsFilter();
@@ -75,7 +81,14 @@ public class FilterProvider implements IFilterProvider {
         priceLessThanOrEquals800.setValue("800");
         filter.getFilters().add(priceLessThanOrEquals800);
 
-        return filter;
+        User user = new User("carvalhorr@gmail.com");
+        filter.setUser(user);
+
+        List<ActionType> actions = new LinkedList<ActionType>();
+        actions.add(ActionType.MESSAGE_ON_DAFT);
+        filter.setActions(actions);
+
+        return Arrays.asList(filter);
 
     }
 

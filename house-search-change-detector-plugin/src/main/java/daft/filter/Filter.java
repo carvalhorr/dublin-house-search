@@ -1,5 +1,9 @@
 package daft.filter;
 
+import data.ActionType;
+import data.User;
+
+import java.util.List;
 import java.util.Map;
 
 public abstract class Filter {
@@ -7,6 +11,9 @@ public abstract class Filter {
     protected String fieldName;
     protected ValueType fieldType;
     protected String value;
+
+    protected User user;
+    protected List<ActionType> actions;
 
     public String getFieldName() {
         return fieldName;
@@ -32,6 +39,24 @@ public abstract class Filter {
         this.value = value;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<ActionType> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<ActionType> actions) {
+        this.actions = actions;
+    }
+
     public abstract boolean apply(Map<String, String> fields);
+
+
 
 }
