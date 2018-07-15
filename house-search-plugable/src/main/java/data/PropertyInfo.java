@@ -1,12 +1,16 @@
 package data;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PropertyInfo {
 
     private String id;
     private String url;
+    private String advertiserName;
+    private List<String> advertiserPhoneNumbers;
+
     private Map<String, String> fields = new HashMap<>();
 
     public PropertyInfo(String id,
@@ -29,6 +33,23 @@ public class PropertyInfo {
     public Map<String, String> getFields() {
         return fields;
     }
+
+    public String getAdvertiserName() {
+        return advertiserName;
+    }
+
+    public void setAdvertiserName(String advertiserName) {
+        this.advertiserName = advertiserName;
+    }
+
+    public List<String> getAdvertiserPhoneNumbers() {
+        return advertiserPhoneNumbers;
+    }
+
+    public void setAdvertiserPhoneNumbers(List<String> advertiserPhoneNumbers) {
+        this.advertiserPhoneNumbers = advertiserPhoneNumbers;
+    }
+
     private void processAdditionalInfo(String additionalInfo) {
         String fieldsString = additionalInfo
                 .replace("{", "")

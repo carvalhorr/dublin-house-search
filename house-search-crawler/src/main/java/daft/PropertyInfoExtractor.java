@@ -5,7 +5,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import javax.lang.model.util.Elements;
 import java.io.IOException;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -47,12 +51,21 @@ public class PropertyInfoExtractor implements Runnable {
             String id = shortUrl
                     .replace("http://www.daft.ie/", "")
                     .replace("https://www.daft.ie/", "");
+            String advertiserName = doc.select("#smi-tab-negotiator h2").text();
+            org.jsoup.select.Elements base64encodedPhoneNumbers = doc.select(".smi-contact-numbers button");
+            List<String> phones = new LinkedList<String>();
+            for(Element base64encodedPhoneNumber : base64encodedPhoneNumbers) {
+                String phone = Base64.getDecoder().decode(base64encodedPhoneNumbers.attr("data-p")).toString();
+                phones.add(phone);
+            }
 
             // TODO deal with properties that are not available (ex.: http://www.daft.ie/21849103 )
 
             PropertyInfo propertyInfo = new PropertyInfo(id,
                     url,
                     additionalData);
+            propertyInfo.setAdvertiserName(advertiserName);
+            propertyInfo.setAdvertiserPhoneNumbers(phones);
 
             try {
                 extractedPropertyInfos.put(propertyInfo);

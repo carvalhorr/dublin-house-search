@@ -1,5 +1,6 @@
 package daft.filter;
 
+import data.Action;
 import data.ActionType;
 import data.User;
 
@@ -13,7 +14,7 @@ public abstract class Filter {
     protected String value;
 
     protected User user;
-    protected List<ActionType> actions;
+    protected List<Action> actions;
 
     public String getFieldName() {
         return fieldName;
@@ -47,11 +48,11 @@ public abstract class Filter {
         this.user = user;
     }
 
-    public List<ActionType> getActions() {
+    public List<Action> getActions() {
         return actions;
     }
 
-    public void setActions(List<ActionType> actions) {
+    public void setActions(List<Action> actions) {
         this.actions = actions;
     }
 

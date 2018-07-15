@@ -2,7 +2,9 @@ package daft.handler;
 
 import daft.filter.*;
 import daft.filter.boolean_expression.AndFilter;
+import data.Action;
 import data.ActionType;
+import data.MessageOnDaftAction;
 import data.User;
 
 import java.util.Arrays;
@@ -82,10 +84,15 @@ public class FilterProvider implements IFilterProvider {
         filter.getFilters().add(priceLessThanOrEquals800);
 
         User user = new User("carvalhorr@gmail.com");
+        user.setName("Rodrigo");
+        user.setPhone("+353 0830315645");
         filter.setUser(user);
 
-        List<ActionType> actions = new LinkedList<ActionType>();
-        actions.add(ActionType.MESSAGE_ON_DAFT);
+        List<Action> actions = new LinkedList<Action>();
+        MessageOnDaftAction action = new MessageOnDaftAction();
+        // TODO Add the advertiser name in the message??
+        action.setMessage("Hi%2C%0A%0AI+am+looking+for+a+room+like+the+one+you+advertised.+I+work+Monday+to+Friday%2C+9h+to+18h+in+a+tech+company.+The+ideal+place+would+be+quiet+and+clean.+I+am+easygoing%2C+tidy%2C+very+social%2C+non-smoker%2C+single.+%0A%0APlease+reach+out+so+we+can+arrange+a+viewing.%0APhone%3A+%2B353+0830315645%0AEmail%3A+carvalhorr%40gmail.com%0A%0ARegards%2C%0ARodrigo");
+        actions.add(action);
         filter.setActions(actions);
 
         return Arrays.asList(filter);
