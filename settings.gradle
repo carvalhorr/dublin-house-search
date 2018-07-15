@@ -5,3 +5,5 @@ include ':house-search-file-writer-plugin'
 include ':house-search-database-plugin'
 include ':house-search-change-detector-plugin'
 include ':dublin-house-search-send-message-new-property'
+include 'dublin-house-search-send-email-new-property'
+

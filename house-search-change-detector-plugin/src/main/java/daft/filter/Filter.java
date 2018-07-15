@@ -13,8 +13,6 @@ public abstract class Filter {
     protected ValueType fieldType;
     protected String value;
 
-    protected User user;
-    protected List<Action> actions;
 
     public String getFieldName() {
         return fieldName;
@@ -40,24 +38,6 @@ public abstract class Filter {
         this.value = value;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Action> getActions() {
-        return actions;
-    }
-
-    public void setActions(List<Action> actions) {
-        this.actions = actions;
-    }
-
     public abstract boolean apply(Map<String, String> fields);
-
-
 
 }

@@ -1,8 +1,8 @@
 package daft.handler;
 
 import daft.filter.Filter;
+import daft.filter.Search;
 import data.Action;
-import data.ActionType;
 import data.PropertyInfo;
 import data.SearchMatchInfo;
 
@@ -11,11 +11,12 @@ import java.util.List;
 
 public class PropertyChangeHandlerPlugin implements IPropertyInfoChangeHandler {
 
-    protected final IFilterProvider filterProvider;
+    protected final ISearchProvider filterProvider;
 
     protected static List<PropertyInfo> addedPropertyInfos;
 
     protected static SendMessageToProperty sendMessageToPropertyHandler = null;
+    protected static SendEmailNewProperty sendEmailNewProperty = null;
 
     private int threadCounter = 0;
 
@@ -23,7 +24,7 @@ public class PropertyChangeHandlerPlugin implements IPropertyInfoChangeHandler {
         filterProvider = new FilterProvider();
     }
 
-    public PropertyChangeHandlerPlugin(IFilterProvider filterProvider) {
+    public PropertyChangeHandlerPlugin(ISearchProvider filterProvider) {
         this.filterProvider = filterProvider;
     }
 
@@ -34,6 +35,7 @@ public class PropertyChangeHandlerPlugin implements IPropertyInfoChangeHandler {
             if (addedPropertyInfos == null) {
                 addedPropertyInfos = new LinkedList<PropertyInfo>();
                 sendMessageToPropertyHandler = new SendMessageToProperty();
+                sendEmailNewProperty = new SendEmailNewProperty();
             }
         }
     }
@@ -41,14 +43,21 @@ public class PropertyChangeHandlerPlugin implements IPropertyInfoChangeHandler {
     @Override
     public void propertyInfoAdded(PropertyInfo propertyInfo) {
         synchronized (this) {
-            for(Filter filter : filterProvider.getFilters()) {
-                if (filter.apply(propertyInfo.getFields())) {
-                    addedPropertyInfos.add(propertyInfo);
-                    for(Action action : filter.getActions()) {
-                        SearchMatchInfo searchMatchInfo = new SearchMatchInfo(filter.getUser(), action, propertyInfo);
+            addedPropertyInfos.add(propertyInfo);
+            for(Search search : filterProvider.getSearches()) {
+                if (search.getFilter().apply(propertyInfo.getFields())) {
+                    for(Action action : search.getActions()) {
+                        SearchMatchInfo searchMatchInfo = new SearchMatchInfo(search.getName(),
+                                search.getUser(),
+                                action,
+                                propertyInfo);
                         switch (action.getType()) {
                             case MESSAGE_ON_DAFT: {
                                 sendMessageToPropertyHandler.handleNewMatch(searchMatchInfo);
+                                break;
+                            }
+                            case EMAIL_INDIVIDUAL: {
+                                sendEmailNewProperty.handleNewMatch(searchMatchInfo);
                                 break;
                             }
                         }

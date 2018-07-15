@@ -2,25 +2,23 @@ package daft.handler;
 
 import daft.filter.*;
 import daft.filter.boolean_expression.AndFilter;
-import data.Action;
-import data.ActionType;
-import data.MessageOnDaftAction;
-import data.User;
+import data.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FilterProvider implements IFilterProvider {
+public class FilterProvider implements ISearchProvider {
 
-    private List<Filter> filter = initFilter();
+    private List<Search> searchers = initFilter();
 
     @Override
-    public List<Filter> getFilters() {
-        return filter;
+    public List<Search> getSearches() {
+        return searchers;
     }
 
-    private List<Filter> initFilter() {
+    private List<Search> initFilter() {
+
         AndFilter filter = new AndFilter();
 
         EqualsFilter houseShare = new EqualsFilter();
@@ -45,7 +43,7 @@ public class FilterProvider implements IFilterProvider {
         smithfieldAndPortobeloArea.setFieldName("area");
         smithfieldAndPortobeloArea.setFieldType(ValueType.STRING);
         smithfieldAndPortobeloArea.setValue("Smithfield");
-        //filter.getFilters().add(smithfieldAndPortobeloArea);
+        filter.getFilters().add(smithfieldAndPortobeloArea);
 
         ContainsFilter withWashingMachine = new ContainsFilter();
         withWashingMachine.setFieldName("facility");
@@ -80,22 +78,26 @@ public class FilterProvider implements IFilterProvider {
         LessThanOrEqualFilter priceLessThanOrEquals800 = new LessThanOrEqualFilter();
         priceLessThanOrEquals800.setFieldName("price");
         priceLessThanOrEquals800.setFieldType(ValueType.INTEGER);
-        priceLessThanOrEquals800.setValue("600");
+        priceLessThanOrEquals800.setValue("800");
         filter.getFilters().add(priceLessThanOrEquals800);
 
         User user = new User("carvalhorr@gmail.com");
         user.setName("Rodrigo");
         user.setPhone("+353 0830315645");
-        filter.setUser(user);
 
         List<Action> actions = new LinkedList<Action>();
-        MessageOnDaftAction action = new MessageOnDaftAction();
+        SendEmailAction action = new SendEmailAction();
         // TODO Add the advertiser name in the message??
-        action.setMessage("Hi%2C%0A%0AI+am+looking+for+a+room+like+the+one+you+advertised.+I+work+Monday+to+Friday%2C+9h+to+18h+in+a+tech+company.+The+ideal+place+would+be+quiet+and+clean.+I+am+easygoing%2C+tidy%2C+very+social%2C+non-smoker%2C+single.+%0A%0APlease+reach+out+so+we+can+arrange+a+viewing.%0APhone%3A+%2B353+0830315645%0AEmail%3A+carvalhorr%40gmail.com%0A%0ARegards%2C%0ARodrigo");
+        // action.setMessage("Hi%2C%0A%0AI+am+looking+for+a+room+like+the+one+you+advertised.+I+work+Monday+to+Friday%2C+9h+to+18h+in+a+tech+company.+The+ideal+place+would+be+quiet+and+clean.+I+am+easygoing%2C+tidy%2C+very+social%2C+non-smoker%2C+single.+%0A%0APlease+reach+out+so+we+can+arrange+a+viewing.%0APhone%3A+%2B353+0830315645%0AEmail%3A+carvalhorr%40gmail.com%0A%0ARegards%2C%0ARodrigo");
         actions.add(action);
-        filter.setActions(actions);
 
-        return Arrays.asList(filter);
+        Search search = new Search();
+        search.setName("Houseshare in Smithfield under 800");
+        search.setFilter(filter);
+        search.setUser(user);
+        search.setActions(actions);
+
+        return Arrays.asList(search);
 
     }
 
