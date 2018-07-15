@@ -43,7 +43,7 @@ public class FilterProvider implements ISearchProvider {
         smithfieldAndPortobeloArea.setFieldName("area");
         smithfieldAndPortobeloArea.setFieldType(ValueType.STRING);
         smithfieldAndPortobeloArea.setValue("Smithfield");
-        filter.getFilters().add(smithfieldAndPortobeloArea);
+        // filter.getFilters().add(smithfieldAndPortobeloArea);
 
         ContainsFilter withWashingMachine = new ContainsFilter();
         withWashingMachine.setFieldName("facility");
