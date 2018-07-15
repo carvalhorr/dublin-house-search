@@ -1,6 +1,7 @@
 package daft.handler;
 
 import daft.filter.Filter;
+import data.Action;
 import data.ActionType;
 import data.PropertyInfo;
 import data.SearchMatchInfo;
@@ -14,7 +15,7 @@ public class PropertyChangeHandlerPlugin implements IPropertyInfoChangeHandler {
 
     protected static List<PropertyInfo> addedPropertyInfos;
 
-    protected SendMessageToProperty sendMessageToPropertyHandler = null;
+    protected static SendMessageToProperty sendMessageToPropertyHandler = null;
 
     private int threadCounter = 0;
 
@@ -43,9 +44,9 @@ public class PropertyChangeHandlerPlugin implements IPropertyInfoChangeHandler {
             for(Filter filter : filterProvider.getFilters()) {
                 if (filter.apply(propertyInfo.getFields())) {
                     addedPropertyInfos.add(propertyInfo);
-                    for(ActionType action : filter.getActions()) {
-                        SearchMatchInfo searchMatchInfo = new SearchMatchInfo(filter.getUser(), filter.getActions(), propertyInfo);
-                        switch (action) {
+                    for(Action action : filter.getActions()) {
+                        SearchMatchInfo searchMatchInfo = new SearchMatchInfo(filter.getUser(), action, propertyInfo);
+                        switch (action.getType()) {
                             case MESSAGE_ON_DAFT: {
                                 sendMessageToPropertyHandler.handleNewMatch(searchMatchInfo);
                                 break;

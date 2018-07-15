@@ -45,7 +45,7 @@ public class FilterProvider implements IFilterProvider {
         smithfieldAndPortobeloArea.setFieldName("area");
         smithfieldAndPortobeloArea.setFieldType(ValueType.STRING);
         smithfieldAndPortobeloArea.setValue("Smithfield");
-        filter.getFilters().add(smithfieldAndPortobeloArea);
+        //filter.getFilters().add(smithfieldAndPortobeloArea);
 
         ContainsFilter withWashingMachine = new ContainsFilter();
         withWashingMachine.setFieldName("facility");
@@ -80,7 +80,7 @@ public class FilterProvider implements IFilterProvider {
         LessThanOrEqualFilter priceLessThanOrEquals800 = new LessThanOrEqualFilter();
         priceLessThanOrEquals800.setFieldName("price");
         priceLessThanOrEquals800.setFieldType(ValueType.INTEGER);
-        priceLessThanOrEquals800.setValue("800");
+        priceLessThanOrEquals800.setValue("600");
         filter.getFilters().add(priceLessThanOrEquals800);
 
         User user = new User("carvalhorr@gmail.com");

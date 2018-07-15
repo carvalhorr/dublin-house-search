@@ -51,12 +51,25 @@ public class PropertyInfoExtractor implements Runnable {
             String id = shortUrl
                     .replace("http://www.daft.ie/", "")
                     .replace("https://www.daft.ie/", "");
-            String advertiserName = doc.select("#smi-tab-negotiator h2").text();
+            String advertiserName = "";
+            try {
+                advertiserName = doc.select("#smi-tab-negotiator h2").text();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
             org.jsoup.select.Elements base64encodedPhoneNumbers = doc.select(".smi-contact-numbers button");
             List<String> phones = new LinkedList<String>();
             for(Element base64encodedPhoneNumber : base64encodedPhoneNumbers) {
-                String phone = Base64.getDecoder().decode(base64encodedPhoneNumbers.attr("data-p")).toString();
-                phones.add(phone);
+                try {
+                    if ("Show Number".equals(base64encodedPhoneNumbers.select("strong").text().trim())) {
+                        String phone = new String(Base64.getDecoder().decode(base64encodedPhoneNumbers.attr("data-p")));
+                        phones.add(phone);
+                    } else {
+                        phones.add(base64encodedPhoneNumbers.attr("data-p"));
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println(shortUrl);
+                }
             }
 
             // TODO deal with properties that are not available (ex.: http://www.daft.ie/21849103 )

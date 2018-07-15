@@ -5,6 +5,6 @@ import data.SearchMatchInfo;
 
 public interface ISearchMatchHandler {
 
-    void handleNewMatch(SearchMatchInfo matchInfo, Action action);
+    void handleNewMatch(SearchMatchInfo matchInfo);
 
 }

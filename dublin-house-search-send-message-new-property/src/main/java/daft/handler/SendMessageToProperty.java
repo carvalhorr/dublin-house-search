@@ -17,7 +17,7 @@ import java.util.StringJoiner;
 public class SendMessageToProperty implements daft.handler.ISearchMatchHandler {
 
     @Override
-    public void handleNewMatch(SearchMatchInfo matchInfo, Action action) {
+    public void handleNewMatch(SearchMatchInfo matchInfo) {
 
         try {
 
@@ -31,7 +31,7 @@ public class SendMessageToProperty implements daft.handler.ISearchMatchHandler {
             arguments.put("action", "daft_contact_advertiser");
             arguments.put("from", matchInfo.getUser().getName());
             arguments.put("email", matchInfo.getUser().getEmail());
-            arguments.put("message", ((MessageOnDaftAction)action).getMessage());
+            arguments.put("message", ((MessageOnDaftAction)matchInfo.getAction()).getMessage());
             arguments.put("contact_number", matchInfo.getUser().getPhone());
             arguments.put("type", matchInfo.getProperty().getFields().get("property_category"));
             arguments.put("id", matchInfo.getProperty().getId());
