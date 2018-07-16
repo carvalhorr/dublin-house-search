@@ -31,7 +31,8 @@ public class DatabasePropertyInfoHandler implements IPropertyInfoExtractedHandle
 
         try {
 
-            Connection connection = DriverManager.getConnection("jdbc:h2:/home/carvalhorr/property;mv_store=false", "sa", "");
+            Connection connection = DriverManager
+                    .getConnection("jdbc:h2:/home/carvalhorr/property;mv_store=false;AUTO_SERVER=TRUE", "sa", "");
             statement = connection.createStatement();
             persistence = new PropertyInfoPersistence(changeHandler, statement);
             persistence.createTable();

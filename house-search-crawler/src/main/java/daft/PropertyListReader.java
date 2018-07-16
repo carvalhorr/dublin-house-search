@@ -29,23 +29,35 @@ public class PropertyListReader implements Runnable {
         do {
             Document doc = null;
             try {
-                doc = Jsoup.connect(url + offset).get();
+                doc = Jsoup.connect(url + offset)
+                        .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
+                        .timeout(15000)
+                        .get();
+                boxes = doc.select(".box");
+                for (Element box : boxes) {
+                    String href = box.select("h2 a").attr("href");
+                    // System.out.println(box.select("h2 span").text() + " " + href);
+                    String[] parts = href.split("-");
+                    String id = idPrefix + parts[parts.length - 1].replace("/", "").trim();
+                    try {
+                        propertyIdsQueue.put(id);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                offset += 200;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            boxes = doc.select(".box");
-            for (Element box : boxes) {
-                String href = box.select("h2 a").attr("href");
-                // System.out.println(box.select("h2 span").text() + " " + href);
-                String[] parts = href.split("-");
-                String id = idPrefix + parts[parts.length - 1].replace("/", "").trim();
+            finally {
                 try {
-                    propertyIdsQueue.put(id);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
+                    // TODO log error and recover
+                    System.out.println("ERROR loading : " + url);
                     e.printStackTrace();
                 }
             }
-            offset += 20;
         } while (boxes != null && boxes.size() > 0);
 
     }
