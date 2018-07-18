@@ -19,13 +19,13 @@ public class FilterProvider implements ISearchProvider {
 
     private List<Search> initFilter() {
 
-        return Arrays.asList(createSearchAnywhereUnder600(),
+        return Arrays.asList(createSearchAnywhereUnder800(),
                 createSearchSmithfieldUnder800(),
                 createSearchSmithfieldEnsuiteUnder1000());
 
     }
 
-    private Search createSearchAnywhereUnder600() {
+    private Search createSearchAnywhereUnder800() {
         AndFilter filter = new AndFilter();
 
         EqualsFilter houseShare = new EqualsFilter();
@@ -45,12 +45,6 @@ public class FilterProvider implements ISearchProvider {
         notFemale.setFieldType(ValueType.STRING);
         notFemale.setValue("male, either");
         filter.getFilters().add(notFemale);
-
-        EqualsFilter smithfieldAndPortobeloArea = new EqualsFilter();
-        smithfieldAndPortobeloArea.setFieldName("area");
-        smithfieldAndPortobeloArea.setFieldType(ValueType.STRING);
-        smithfieldAndPortobeloArea.setValue("Smithfield");
-        // filter.getFilters().add(smithfieldAndPortobeloArea);
 
         ContainsFilter withWashingMachine = new ContainsFilter();
         withWashingMachine.setFieldName("facility");
@@ -99,7 +93,7 @@ public class FilterProvider implements ISearchProvider {
         actions.add(action);
 
         Search search = new Search();
-        search.setName("Houseshare anywhere under 600");
+        search.setName("Houseshare anywhere under 800");
         search.setFilter(filter);
         search.setUser(user);
         search.setActions(actions);
