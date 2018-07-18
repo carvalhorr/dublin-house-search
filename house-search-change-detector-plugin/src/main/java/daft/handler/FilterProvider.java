@@ -19,13 +19,14 @@ public class FilterProvider implements ISearchProvider {
 
     private List<Search> initFilter() {
 
-        return Arrays.asList(createSearchAnywhereUnder800(),
-                createSearchSmithfieldUnder800(),
-                createSearchSmithfieldEnsuiteUnder1000());
+        return Arrays.asList(createSearchShareAnywhereUnder800(),
+                createSearchShareSmithfieldUnder800(),
+                createSearchShareSmithfieldEnsuiteUnder1000(),
+                createSearchRentAnywhereUnder2000());
 
     }
 
-    private Search createSearchAnywhereUnder800() {
+    private Search createSearchShareAnywhereUnder800() {
         AndFilter filter = new AndFilter();
 
         EqualsFilter houseShare = new EqualsFilter();
@@ -101,7 +102,7 @@ public class FilterProvider implements ISearchProvider {
         return search;
     }
 
-    private Search createSearchSmithfieldUnder800() {
+    private Search createSearchShareSmithfieldUnder800() {
         AndFilter filter = new AndFilter();
 
         EqualsFilter houseShare = new EqualsFilter();
@@ -183,7 +184,8 @@ public class FilterProvider implements ISearchProvider {
         return search;
     }
 
-    private Search createSearchSmithfieldEnsuiteUnder1000() {
+    private Search createSearchShareSmithfieldEnsuiteUnder1000() {
+
         AndFilter filter = new AndFilter();
 
         EqualsFilter houseShare = new EqualsFilter();
@@ -269,6 +271,42 @@ public class FilterProvider implements ISearchProvider {
         search.setActions(actions);
 
         return search;
+
+    }
+
+    private Search createSearchRentAnywhereUnder2000() {
+        AndFilter filter = new AndFilter();
+
+        EqualsFilter houseShare = new EqualsFilter();
+        houseShare.setFieldName("property_category");
+        houseShare.setFieldType(ValueType.STRING);
+        houseShare.setValue("rental");
+        filter.getFilters().add(houseShare);
+
+        LessThanOrEqualFilter priceLessThanOrEqual2000 = new LessThanOrEqualFilter();
+        priceLessThanOrEqual2000.setFieldName("price");
+        priceLessThanOrEqual2000.setFieldType(ValueType.INTEGER);
+        priceLessThanOrEqual2000.setValue("2000");
+        filter.getFilters().add(priceLessThanOrEqual2000);
+
+        User user = new User("carvalhorr@gmail.com");
+        user.setName("Rodrigo");
+        user.setPhone("+353 0830315645");
+
+        List<Action> actions = new LinkedList<Action>();
+        SendEmailAction action = new SendEmailAction();
+        // TODO Add the advertiser name in the message??
+        // action.setMessage("Hi%2C%0A%0AI+am+looking+for+a+room+like+the+one+you+advertised.+I+work+Monday+to+Friday%2C+9h+to+18h+in+a+tech+company.+The+ideal+place+would+be+quiet+and+clean.+I+am+easygoing%2C+tidy%2C+very+social%2C+non-smoker%2C+single.+%0A%0APlease+reach+out+so+we+can+arrange+a+viewing.%0APhone%3A+%2B353+0830315645%0AEmail%3A+carvalhorr%40gmail.com%0A%0ARegards%2C%0ARodrigo");
+        actions.add(action);
+
+        Search search = new Search();
+        search.setName("Rent anywhere under 2000");
+        search.setFilter(filter);
+        search.setUser(user);
+        search.setActions(actions);
+
+        return search;
+
     }
 
 }
