@@ -2,21 +2,37 @@ package daft.handler;
 
 import data.PropertyInfo;
 
-import java.util.Iterator;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.*;
 
 public class PropertyInfoHandlerService implements IPropertyInfoExtractedHandler {
 
     private ServiceLoader<IPropertyInfoExtractedHandler> loader;
 
+
     public PropertyInfoHandlerService() {
-        loader = ServiceLoader.load(IPropertyInfoExtractedHandler.class);
+        File[] pluginFiles = new File("plugins").listFiles((File dir, String name) -> name.endsWith(".jar"));
+        List<URL> urlsList = new ArrayList<>();
+        for (File file : pluginFiles) {
+            try {
+                urlsList.add(file.toURI().toURL());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+        URLClassLoader classLoader = URLClassLoader.newInstance(urlsList.toArray(new URL[]{}), Thread.currentThread().getContextClassLoader());
+        loader = ServiceLoader.load(IPropertyInfoExtractedHandler.class,
+                classLoader);
     }
+
 
     @Override
     public void start() {
         try {
+            loader.reload();
             Iterator<IPropertyInfoExtractedHandler> handlers = loader.iterator();
             while (handlers.hasNext()) {
                 IPropertyInfoExtractedHandler handler = handlers.next();

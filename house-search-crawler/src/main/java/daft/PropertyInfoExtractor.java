@@ -104,7 +104,7 @@ public class PropertyInfoExtractor implements Runnable {
     }
 
     private String findData(Document doc) {
-        org.jsoup.select.Elements scripts = doc.select("script");
+        org.jsoup.select.Elements scripts = doc.select( "script");
         for (Element script : scripts) {
 
             String starting = "var trackingParam = ";

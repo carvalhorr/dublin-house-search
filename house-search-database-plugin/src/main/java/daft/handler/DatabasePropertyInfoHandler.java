@@ -31,6 +31,11 @@ public class DatabasePropertyInfoHandler implements IPropertyInfoExtractedHandle
 
         try {
 
+            try {
+                Class.forName("org.h2.Driver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             Connection connection = DriverManager
                     .getConnection("jdbc:h2:/home/carvalhorr/carvalhorr@gmail.com/software/house-search/db/property;mv_store=false;AUTO_SERVER=TRUE", "sa", "");
             statement = connection.createStatement();

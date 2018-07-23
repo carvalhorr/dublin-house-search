@@ -1,5 +1,6 @@
 package daft;
 
+import daft.handler.PropertyInfoHandlerService;
 import data.PropertyInfo;
 import org.xml.sax.SAXException;
 
