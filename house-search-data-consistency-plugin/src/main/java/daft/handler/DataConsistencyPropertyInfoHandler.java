@@ -1,24 +1,40 @@
 package daft.handler;
 
+import daft.consistency.data.FieldConfig;
+import daft.consistency.data.ProcessingType;
+import daft.consistency.persistence.IFieldConfigPersistence;
 import data.PropertyInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataConsistencyPropertyInfoHandler implements IPropertyInfoExtractedHandler {
 
-    private static Map<String, List<String>> rentFields;
-    private static Map<String, List<String>> shareFields;
-    private static Map<String, List<String>> saleFields;
+    private static Map<String, FieldConfig> rentFields;
+    private static Map<String, FieldConfig> shareFields;
+    private static Map<String, FieldConfig> saleFields;
+
+    private IFieldConfigPersistence fieldConfigPersistence;
+
+    public DataConsistencyPropertyInfoHandler() {
+
+    }
+
+    public DataConsistencyPropertyInfoHandler(IFieldConfigPersistence fieldConfigPersistence) {
+        this.fieldConfigPersistence = fieldConfigPersistence;
+    }
 
     @Override
     public void start() {
-        if (rentFields == null) {
-            rentFields = new HashMap<>();
-            shareFields = new HashMap<>();
-            saleFields = new HashMap<>();
+        synchronized (this) {
+            if (rentFields == null) {
+                rentFields = loadFields(IFieldConfigPersistence.RENT_FIELDS);
+                shareFields = loadFields(IFieldConfigPersistence.SHARE_FIELDS);
+                saleFields = loadFields(IFieldConfigPersistence.SALE_FIELDS);
+
+                cleanFields(rentFields);
+                cleanFields(shareFields);
+                cleanFields(saleFields);
+            }
         }
     }
 
@@ -45,16 +61,18 @@ public class DataConsistencyPropertyInfoHandler implements IPropertyInfoExtracte
 
     }
 
-    private void addFields(Map<String, List<String>> fieldMap, Map<String, String> fields) {
+    private void addFields(Map<String, FieldConfig> fieldMap, Map<String, String> fields) {
         for (String fieldName : fields.keySet()) {
             String fieldValue = fields.get(fieldName);
-            List<String> values = fieldMap.get(fieldName);
+            FieldConfig values = fieldMap.get(fieldName);
             if (values == null) {
-                values = new ArrayList<>();
+                values = new FieldConfig();
                 fieldMap.put(fieldName, values);
             }
-            if (!values.contains(fieldValue)) {
-                values.add(fieldValue);
+            if (!ProcessingType.IGNORE.equals(values.getProcessingType())) {
+                if (!values.getValues().contains(fieldValue)) {
+                    values.getValues().add(fieldValue);
+                }
             }
         }
 
@@ -62,17 +80,32 @@ public class DataConsistencyPropertyInfoHandler implements IPropertyInfoExtracte
 
     @Override
     public void end() {
-        System.out.println("Rent: ");
-        printStatistics(rentFields);
-        System.out.println("Share: ");
-        printStatistics(shareFields);
-        System.out.println("Sale: ");
-        printStatistics(saleFields);
-    }
-
-    private void printStatistics(Map<String, List<String>> fields) {
-        for (String fieldName : fields.keySet()) {
-            System.out.println("  " + fieldName + " : " + fields.get(fieldName));
+        synchronized (this) {
+            if (rentFields != null) {
+                saveFields(IFieldConfigPersistence.RENT_FIELDS, rentFields);
+                saveFields(IFieldConfigPersistence.SHARE_FIELDS, shareFields);
+                saveFields(IFieldConfigPersistence.SALE_FIELDS, saleFields);
+                rentFields = null;
+                shareFields = null;
+                saleFields = null;
+            }
         }
     }
+
+    private void cleanFields(Map<String, FieldConfig> fields) {
+        for(FieldConfig fieldConfig : fields.values()) {
+            if (ProcessingType.IGNORE.equals(fieldConfig.getProcessingType())) {
+                fieldConfig.setValues(new LinkedList<>());
+            }
+        }
+    }
+
+    private Map<String, FieldConfig> loadFields(String fieldSet) {
+        return fieldConfigPersistence.loadFields(fieldSet);
+    }
+
+    private void saveFields(String fieldSet, Map<String, FieldConfig> fields) {
+        fieldConfigPersistence.saveFields(fieldSet, fields);
+    }
+
 }
