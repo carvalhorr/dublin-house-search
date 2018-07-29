@@ -1,10 +1,7 @@
 package daft.filter;
 
-import data.Action;
-import data.ActionType;
-import data.User;
+import data.ValueType;
 
-import java.util.List;
 import java.util.Map;
 
 public abstract class Filter {

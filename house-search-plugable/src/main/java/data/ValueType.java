@@ -1,4 +1,4 @@
-package daft.filter;
+package data;
 
 public enum ValueType {
 

@@ -1,6 +1,7 @@
 package daft.filter;
 
 import daft.util.FieldValueConverter;
+import data.ValueType;
 
 import java.util.List;
 import java.util.Map;

@@ -53,7 +53,7 @@ public class PropertyInfo {
     private void processAdditionalInfo(String additionalInfo) {
         String fieldsString = additionalInfo
                 .replace("{", "")
-                .replace("}", "");
+                .replace("}", "") + ",";
         int x = 0;
         boolean take = true;
         for (int i = 0; i < fieldsString.length(); i++) {
@@ -61,7 +61,10 @@ public class PropertyInfo {
                 take = !take;
             } else if (fieldsString.charAt(i) == ',') {
                 if (take) {
-                    String field = fieldsString.substring(x, i);
+                    String field = fieldsString.substring(x, i).trim();
+                    if (field.startsWith(",")) {
+                        field = field.substring(1, field.length()).trim();
+                    }
                     // System.out.println(field);
                     String fieldPair[] = field.split(":");
                     String fieldName = fieldPair[0].trim();
