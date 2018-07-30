@@ -10,6 +10,7 @@ public class PropertyInfo {
     private String url;
     private String advertiserName;
     private List<String> advertiserPhoneNumbers;
+    private boolean removed;
 
     private Map<String, String> fields = new HashMap<>();
 
@@ -19,6 +20,7 @@ public class PropertyInfo {
         this.id = id;
         this.url = url;
         processAdditionalInfo(additionalInfo);
+        this.removed = false;
     }
 
 
@@ -48,6 +50,14 @@ public class PropertyInfo {
 
     public void setAdvertiserPhoneNumbers(List<String> advertiserPhoneNumbers) {
         this.advertiserPhoneNumbers = advertiserPhoneNumbers;
+    }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
     }
 
     private void processAdditionalInfo(String additionalInfo) {

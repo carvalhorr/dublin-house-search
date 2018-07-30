@@ -1,6 +1,5 @@
 package daft;
 
-import daft.handler.PropertyInfoHandlerService;
 import data.PropertyInfo;
 import org.xml.sax.SAXException;
 
@@ -21,15 +20,15 @@ public class PropertyCrawler {
 
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, InterruptedException {
 
-        Thread shareReader = new Thread(new PropertyListReader(propertyIds,
+        Thread shareReader = new Thread(new PropertyListReaderRunnable(propertyIds,
                 "https://www.daft.ie/dublin-city/rooms-to-share/?s%5Broom_type%5D=either&s%5Badvanced%5D=1&s%5Bgender%5D=on&searchSource=sharing&offset=",
                 "3"));
 
-        Thread rentReader = new Thread(new PropertyListReader(propertyIds,
+        Thread rentReader = new Thread(new PropertyListReaderRunnable(propertyIds,
                 "http://www.daft.ie/dublin-city/residential-property-for-rent/?s%5Badvanced%5D=1&s%5Bignored_agents%5D%5B0%5D=428&s%5Bignored_agents%5D%5B1%5D=1551&searchSource=rental&offset=",
                 "2"));
 
-        Thread saleReader = new Thread(new PropertyListReader(propertyIds,
+        Thread saleReader = new Thread(new PropertyListReaderRunnable(propertyIds,
                 "http://www.daft.ie/dublin-city/property-for-sale/?s%5Badvanced%5D=1&searchSource=sale&offset=",
                 "1"));
         Thread[] propertyListReaderThreads = {saleReader, rentReader, shareReader};
@@ -38,16 +37,16 @@ public class PropertyCrawler {
         }
 
         Thread[] infoExtractors = {
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos)),
-                new Thread(new PropertyInfoExtractor(propertyIds, finishedAddingItems, extractedPropertyInfos))};
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
+                new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos))};
         for (Thread thread : infoExtractors) {
             thread.start();
         }

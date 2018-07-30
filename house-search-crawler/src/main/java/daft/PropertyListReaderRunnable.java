@@ -6,15 +6,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.BlockingQueue;
 
-public class PropertyListReader implements Runnable {
+public class PropertyListReaderRunnable implements Runnable {
 
     private BlockingQueue<String> propertyIdsQueue;
     private String url;
     private String idPrefix;
 
-    public PropertyListReader(BlockingQueue<String> propertyIdsQueue, String url, String idPrefix) {
+    public PropertyListReaderRunnable(BlockingQueue<String> propertyIdsQueue, String url, String idPrefix) {
         this.propertyIdsQueue = propertyIdsQueue;
         this.url = url;
         this.idPrefix = idPrefix;
@@ -45,8 +46,12 @@ public class PropertyListReader implements Runnable {
                         e.printStackTrace();
                     }
                 }
-                offset += 200;
+                offset += 20;
+            } catch (SocketTimeoutException e) {
+                e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             finally {
