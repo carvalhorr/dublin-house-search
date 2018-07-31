@@ -32,12 +32,16 @@ public class PropertyInfoPersistence {
 
     public void processPropertyInfo(PropertyInfo propertyInfo) {
         try {
-            if (isNew(propertyInfo)) {
-                add(propertyInfo);
-                changeHandler.propertyInfoAdded(propertyInfo);
+            if (propertyInfo.isRemoved()) {
+                delete(propertyInfo);
             } else {
-                update(propertyInfo);
-                changeHandler.propertyInfoUpdated(propertyInfo);
+                if (isNew(propertyInfo)) {
+                    add(propertyInfo);
+                    changeHandler.propertyInfoAdded(propertyInfo);
+                } else {
+                    update(propertyInfo);
+                    changeHandler.propertyInfoUpdated(propertyInfo);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -62,8 +66,17 @@ public class PropertyInfoPersistence {
     }
 
     private void update(PropertyInfo propertyInfo) throws SQLException {
-        statement.execute("DELETE FROM fields WHERE property_id = '" + propertyInfo.getId() + "';");
+        deleteFields(propertyInfo.getId());
         insertFields(propertyInfo.getId(), propertyInfo.getFields());
+    }
+
+    private void delete(PropertyInfo propertyInfo) throws SQLException {
+        deleteFields(propertyInfo.getId());
+        statement.execute("DELETE FROM property WHERE id = '" + propertyInfo.getId() + "';");
+    }
+
+    private void deleteFields(String id) throws SQLException {
+        statement.execute("DELETE FROM fields WHERE property_id = '" + id + "';");
     }
 
     private void insertFields(String propertyId, Map<String, String> fields) throws SQLException {
