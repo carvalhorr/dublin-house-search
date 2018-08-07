@@ -8,4 +8,6 @@ include ':dublin-house-search-send-message-new-property'
 include ':dublin-house-search-send-email-new-property'
 include ':house-search-console-printer-plugin'
 include ':house-search-data-consistency-plugin'
+include 'house-search-clean-database'
+include 'search-data-api'
 
