@@ -19,28 +19,24 @@ public class PropertyInfoPersistence {
         this.changeHandler = changeHandler;
     }
 
-    public void createTable() {
-        try {
-            statement.execute("CREATE TABLE IF NOT EXISTS property(id bigint, url varchar(50));");
-            statement.execute("CREATE TABLE IF NOT EXISTS fields(property_id bigint, field_name varchar(50), field_value varchar(256));");
-            statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS PK_property_id ON PROPERTY(id);");
-            statement.execute("CREATE INDEX IF NOT EXISTS FK_fields_property_id ON FIELDS(property_id);");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void processPropertyInfo(PropertyInfo propertyInfo) {
         try {
             if (propertyInfo.isRemoved()) {
                 delete(propertyInfo);
+                if (changeHandler != null) {
+                    changeHandler.propertyInfoRemoved(propertyInfo);
+                }
             } else {
                 if (isNew(propertyInfo)) {
                     add(propertyInfo);
-                    changeHandler.propertyInfoAdded(propertyInfo);
+                    if (changeHandler != null) {
+                        changeHandler.propertyInfoAdded(propertyInfo);
+                    }
                 } else {
                     update(propertyInfo);
-                    changeHandler.propertyInfoUpdated(propertyInfo);
+                    if (changeHandler != null) {
+                        changeHandler.propertyInfoUpdated(propertyInfo);
+                    }
                 }
             }
         } catch (SQLException e) {

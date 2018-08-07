@@ -11,7 +11,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PropertyCrawler {
+public class PropertyCrawlerCommand {
 
     private static BlockingQueue<String> propertyIds = new ArrayBlockingQueue<String>(100);
     private static BlockingQueue<PropertyInfo> extractedPropertyInfos = new ArrayBlockingQueue<>(100);
@@ -35,6 +35,8 @@ public class PropertyCrawler {
         for (Thread propertyListReaderThread : propertyListReaderThreads) {
             propertyListReaderThread.start();
         }
+
+        // TODO make number of threads a parameter
 
         Thread[] infoExtractors = {
                 new Thread(new PropertyInfoExtractorRunnable(propertyIds, finishedAddingItems, extractedPropertyInfos)),
